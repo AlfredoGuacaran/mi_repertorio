@@ -4,19 +4,16 @@ import { insertar, consultar } from './db.js';
 
 app.use(express.static('static'));
 
-app.get('/ejercicios', async (req, res) => {
-  const data = await consultar();
-  res.json(data);
-  res.end();
-});
-app.post('/ejercicios', async (req, res) => {
+app.post('/cancion', async (req, res) => {
   let data;
   req.on('data', (payload) => {
+    console.log(payload);
     data = JSON.parse(payload);
+    console.log(data);
   });
   req.on('end', async () => {
-    const { nombre, series, repeticiones, descanso } = data;
-    const post = await insertar(nombre, series, repeticiones, descanso);
+    const { cancion, artista, tono } = data;
+    const post = await insertar(cancion, artista, tono);
     res.status(201);
     res.send(post);
   });

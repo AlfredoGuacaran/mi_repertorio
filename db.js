@@ -15,18 +15,11 @@ const config = {
 
 const pool = new Pool(config);
 
-export async function getNow() {
-  const client = await pool.connect();
-  const res = await client.query('select now()');
-  client.release();
-  return res.rows;
-}
-
-export async function insertar(nombre, series, repeticiones, descanso) {
+export async function insertar(cancion, artista, tono) {
   const client = await pool.connect();
   const res = await client.query({
-    text: 'insert into ejercicios values ($1,$2,$3,$4)',
-    values: [nombre, series, repeticiones, descanso],
+    text: 'insert into repertorio (cancion, artista, tono) values ($1,$2,$3)',
+    values: [cancion, artista, tono],
   });
   return res;
 }
