@@ -16,16 +16,58 @@ const config = {
 const pool = new Pool(config);
 
 export async function insertar(cancion, artista, tono) {
-  const client = await pool.connect();
-  const res = await client.query({
-    text: 'insert into repertorio (cancion, artista, tono) values ($1,$2,$3)',
-    values: [cancion, artista, tono],
-  });
-  return res;
+  try {
+    const client = await pool.connect();
+    const res = await client.query({
+      text: 'insert into repertorio (cancion, artista, tono) values ($1,$2,$3)',
+      values: [cancion, artista, tono],
+    });
+    client.release();
+    return res;
+  } catch (error) {
+    console.log(error.code);
+    return error;
+  }
 }
 
 export async function consultar() {
-  const client = await pool.connect();
-  const res = await client.query('select * from ejercicios;');
-  return res;
+  try {
+    const client = await pool.connect();
+    const res = await client.query('select * from repertorio;');
+    client.release();
+    return res.rows;
+  } catch (error) {
+    console.log(error.code);
+    return error;
+  }
+}
+
+export async function eliminar(id) {
+  try {
+    const client = await pool.connect();
+    const res = await client.query({
+      text: 'DELETE from repertorio where id = $1;',
+      values: [id],
+    });
+    client.release();
+    return res.rowCount;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
+
+export async function editar(cancion, artista, tono) {
+  try {
+    const client = await pool.connect();
+    const res = await client.query({
+      text: 'update repertorio set cancion = $1 , artista = $2, tono = $3 where cancion = $1',
+      values: [cancion, artista, tono],
+    });
+    client.release();
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 }
